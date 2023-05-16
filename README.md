@@ -1,2 +1,2 @@
-# google-calendar-addons
+# Google Calendar Addons
 Google Calendar Addons
