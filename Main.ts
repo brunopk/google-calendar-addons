@@ -1,3 +1,6 @@
+import {calendar_v3} from 'googleapis'
+
+
 const USER_PROPERTIES = {
   SYNC_TOKEN: 'syncToken'
 }
@@ -16,41 +19,36 @@ const USER_PROPERTIES = {
  * 
  */
 
-function listTasks() {
-  let now = new Date()
-  let tasks = Tasks.Tasks.list(TASK_LIST_ID, {})
-  
-  for(var i=0; i<tasks.items.length; i++) {
-    console.log(tasks.items[i])
-    // let task = Tasks.Tasks.get(TASK_LIST_ID, tasks.items[i].id)
-    // Tasks.Tasks.patch({ due: new Date(now.getTime() + MILLIS_PER_DAY).toISOString()}, TASK_LIST_ID, task.id)
-  }
 
-}
-
-function initialSync() {
+function getEvents() : calendar_v3.Schema$Event[] {
   let syncToken ; 
   let nextPageToken ;
   let now = new Date();
+  let result = []
   
   do{
-    var page = Calendar.Events.list(
+    var page = Calendar.Events?.list(
       'primary',
       {
-        timeMin: new Date(now.getTime() - MILLIS_PER_DAY ).toISOString(),
+        timeMin: new Date(now.getTime() - MILLISECONDS_PER_DAY ).toISOString(),
         timeMax: now.toISOString(),
       }) ;
     
     if(page.items && page.items.length > 0){
       syncToken= page.nextSyncToken;
       for(var i = 0; i< page.items.length ; i++){
-        var item = page.items[i]
-        console.log(item)
+        result.push(page.items[i])
       }
     }
     
     nextPageToken = page.nextPageToken;
   }while(nextPageToken)
 
-  PropertiesService.getUserProperties().setProperties({[USER_PROPERTIES.SYNC_TOKEN]: syncToken})
+  return result
+}
+
+
+function main() {
+  let events = getEvents()
+  console.log(events[0].start)
 }
