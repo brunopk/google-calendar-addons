@@ -1,15 +1,10 @@
 import { calendar_v3 } from "googleapis"
 
-
-function getTaskLists() {
-  var taskLists = Tasks.Tasklists.list().getItems();
-  var res = taskLists.map(function(list) {
-    return {
-      taskListId: list.getId(),
-      listName: list.getTitle(),
-    };
-  });
-  console.log(res)
+/**
+ * Calculates the resulting date of performing `date - minutes`
+ */
+function minusHours(date: Date, hours: number): Date{
+  return new Date(date.getTime() - hours * MILLISECONDS_PER_HOUR)
 }
 
 /**
@@ -30,19 +25,12 @@ function listCalendars() {
 }
 
 /**
- * Calculates the resulting date of performing `date - minutes`
- */
-function minusMinutes(date: Date, minutes: number): Date{
-  return new Date(date.getTime() - minutes * MILLISECONDS_PER_MINUTE)
-}
-
-/**
  * Returns all events in an specific calendar (identified by its id) for a given period of time in the past
  * @param calendarId calendar id to search events
  * @param minutesInThePast start time of events should be no older than this number of minutes (and up to now)
  * @returns 
  */
-function listEvents(calendarId: string, maxMinutesInThePast: number) {
+function listEvents(calendarId: string, maxHoursInThePast: number) {
   
   let nextPageToken: string | undefined ;
   let now = new Date();
@@ -52,9 +40,9 @@ function listEvents(calendarId: string, maxMinutesInThePast: number) {
     let page = Calendar.Events?.list(
       calendarId,
       {
-        timeMin: minusMinutes(now, maxMinutesInThePast).toISOString(),
+        timeMin: minusHours(now, maxHoursInThePast).toISOString(),
         timeMax: now.toISOString(),
-      });
+    });
     
     if(page?.items && page.items.length > 0){
       for(var i = 0; i< page.items.length ; i++){

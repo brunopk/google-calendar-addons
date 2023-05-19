@@ -1,8 +1,14 @@
-import { listEvents } from "./Types"
+import { calendar_v3 } from "googleapis";
 
-const USER_PROPERTIES = {
-  SYNC_TOKEN: 'syncToken'
-}
+/**
+ * Returns all events in an specific calendar (identified by its id) for a given period of time in the past
+ * @param calendarId calendar id to search events
+ * @param minutesInThePast start time of events should be no older than this number of minutes (and up to now)
+ * @returns 
+ */
+declare function listEvents(calendarId: string, maxMinutesInThePast: number): calendar_v3.Schema$Event[]
+
+
 
 /**
  * Useful links about Google Calendar:
@@ -22,7 +28,14 @@ const USER_PROPERTIES = {
 
 
 
-function main() {
-  let events = listEvents('primary', 30)
-  console.log(events)
+function postponePendingTasks() {
+   
+  let pendingTasks = listEvents(TASK_CALENDAR_ID, 24)
+    .filter(event => event.summary?.startsWith(PENDING_TASK_PREFIX))
+
+  for(let i in pendingTasks) {
+    console.log(pendingTasks[i].start?.dateTime)
+    console.log(pendingTasks[i].end?.dateTime)
+  }
+  
 }
