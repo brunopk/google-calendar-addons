@@ -1,5 +1,4 @@
-import {calendar_v3} from 'googleapis'
-
+import { listEvents } from "./Types"
 
 const USER_PROPERTIES = {
   SYNC_TOKEN: 'syncToken'
@@ -20,35 +19,10 @@ const USER_PROPERTIES = {
  */
 
 
-function getEvents() : calendar_v3.Schema$Event[] {
-  let syncToken ; 
-  let nextPageToken ;
-  let now = new Date();
-  let result = []
-  
-  do{
-    var page = Calendar.Events?.list(
-      'primary',
-      {
-        timeMin: new Date(now.getTime() - MILLISECONDS_PER_DAY ).toISOString(),
-        timeMax: now.toISOString(),
-      }) ;
-    
-    if(page.items && page.items.length > 0){
-      syncToken= page.nextSyncToken;
-      for(var i = 0; i< page.items.length ; i++){
-        result.push(page.items[i])
-      }
-    }
-    
-    nextPageToken = page.nextPageToken;
-  }while(nextPageToken)
 
-  return result
-}
 
 
 function main() {
-  let events = getEvents()
-  console.log(events[0].start)
+  let events = listEvents('primary', 30)
+  console.log(events)
 }
