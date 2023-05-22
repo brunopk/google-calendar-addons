@@ -1,4 +1,10 @@
-import { calendar_v3 } from "googleapis"
+import { tasks_v1 } from "googleapis"
+
+declare const MILLISECONDS_PER_HOUR : number
+
+declare type ExtendedTask = tasks_v1.Schema$Task & {
+  taskList: tasks_v1.Schema$TaskList
+}
 
 /**
  * Calculates the resulting date of performing `date - minutes`
@@ -7,51 +13,25 @@ function minusHours(date: Date, hours: number): Date{
   return new Date(date.getTime() - hours * MILLISECONDS_PER_HOUR)
 }
 
-/**
- * Perform a full sync to list all calendars and logs the result
- */
-function listCalendars() {
-  let pageToken: string | null | undefined = null
-  let calendars: calendar_v3.Schema$CalendarList | undefined
-
-  do {
-    calendars = Calendar.CalendarList?.list({pageToken})
-    for(let i in calendars?.items) {
-      let item : calendar_v3.Schema$CalendarListEntry = calendars?.items[i]
-      console.log(`summary: ${item.summary}, id: ${item.id}`)
+function formatAsHtmlTable(tasks : ExtendedTask[]): string {
+  let tableHeader = 
+  "<tr> " +
+    "<td style=\"border: 1px solid black; font-weight: bold; padding: 1em;\">Lista de tareas</td>" +
+    "<td style=\"border: 1px solid black; font-weight: bold; padding: 1em;\">Título</td>" + 
+    "<td style=\"border: 1px solid black; font-weight: bold; padding: 1em;\">Fecha</td>" + 
+  "</tr>"
+  let rows = tasks.reduce((previousValue, task) => { 
+    if (!task.due) {
+      throw new Error(`Undefined due date for task "${task.title}"`)
     }
-    pageToken = calendars?.nextPageToken
-  } while (pageToken != null)
-}
+    let dueDate = new Date(task.due)
+    return `${previousValue}
+      <tr>
+        <td style="border: 1px solid black; padding: 1em;">${task.taskList.title}</td>
+        <td style="border: 1px solid black; padding: 1em;">${task.title}</td>
+        <td style="border: 1px solid black; padding: 1em;">${dueDate.toLocaleString()}</td>
+      </tr>` 
+  }, "")
 
-/**
- * Returns all events in an specific calendar (identified by its id) for a given period of time in the past
- * @param calendarId calendar id to search events
- * @param minutesInThePast start time of events should be no older than this number of minutes (and up to now)
- * @returns 
- */
-function listEvents(calendarId: string, maxHoursInThePast: number) {
-  
-  let nextPageToken: string | undefined ;
-  let now = new Date();
-  let result : calendar_v3.Schema$Event[] = []
-  
-  do{
-    let page = Calendar.Events?.list(
-      calendarId,
-      {
-        timeMin: minusHours(now, maxHoursInThePast).toISOString(),
-        timeMax: now.toISOString(),
-    });
-    
-    if(page?.items && page.items.length > 0){
-      for(var i = 0; i< page.items.length ; i++){
-        result.push(page?.items[i] as calendar_v3.Schema$Event)
-      }
-    }
-    
-    nextPageToken = page?.nextPageToken;
-  }while(nextPageToken)
-
-  return result
+  return `<table">${tableHeader}${rows}</table>`
 }

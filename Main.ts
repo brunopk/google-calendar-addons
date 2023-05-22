@@ -1,41 +1,36 @@
-import { calendar_v3 } from "googleapis";
+import { calendar_v3, tasks_v1 } from "googleapis";
+
+declare type ExtendedTask = tasks_v1.Schema$Task & {
+  taskList: tasks_v1.Schema$TaskList
+}
 
 /**
- * Returns all events in an specific calendar (identified by its id) for a given period of time in the past
- * @param calendarId calendar id to search events
- * @param minutesInThePast start time of events should be no older than this number of minutes (and up to now)
- * @returns 
+ * Returns the ids of all task list
  */
-declare function listEvents(calendarId: string, maxMinutesInThePast: number): calendar_v3.Schema$Event[]
-
-
+ declare function listTaskLists() : tasks_v1.Schema$TaskList[]
 
 /**
- * Useful links about Google Calendar:
- * 
- *  - Google Calendar API overview: https://developers.google.com/calendar/api/guides/overview
- *  - Synchronize resources efficiently: https://developers.google.com/calendar/api/guides/sync
- *  - Playing with Google Calendar and Apps Script: https://gist.github.com/brunopk/84340d51387a04ade57d484fc0b7e886
- *  - React on Google Calendar change with Apps Script and EventUpdated trigger: https://medium.com/@stephane.giron/react-on-google-calendar-change-with-apps-script-and-eventupdated-trigger-2d092547ab17 
- * 
- *  Useful links about Google Tasks:
- * 
- *  - Google Tasks API: https://developers.google.com/tasks/reference/rest
- * 
+ * List all pending (uncompleted) tasks until now
+ * @param taskListId 
  */
+declare function listPendingTasks(taskList: tasks_v1.Schema$TaskList) : ExtendedTask[]
 
+declare function formatAsHtmlTable(tasks : ExtendedTask[]): string
 
-
-
-
-function postponePendingTasks() {
-   
-  let pendingTasks = listEvents(TASK_CALENDAR_ID, 24)
-    .filter(event => event.summary?.startsWith(PENDING_TASK_PREFIX))
-
-  for(let i in pendingTasks) {
-    console.log(pendingTasks[i].start?.dateTime)
-    console.log(pendingTasks[i].end?.dateTime)
-  }
+function sendMailForPendingTasks() {
+  const MAIL_RECIPIENT = PropertiesService.getScriptProperties().getProperty(PROPERTY_KEYS.MAIL_RECIPIENT)
+  const MAIL_SUBJECT = PropertiesService.getScriptProperties().getProperty(PROPERTY_KEYS.MAIL_SUBJECT)
   
+  if (MAIL_RECIPIENT == null) {
+    throw new Error(`User property "${PROPERTY_KEYS.MAIL_RECIPIENT}" not defined, see https://developers.google.com/apps-script/reference/properties?hl=en`)
+  }
+  if (MAIL_SUBJECT == null) {
+    throw new Error(`User property "${PROPERTY_KEYS.MAIL_SUBJECT}" not defined, see https://developers.google.com/apps-script/reference/properties?hl=en`)
+  }
+
+  const taskLists = listTaskLists()
+  const tasks = taskLists.map((taskList) => listPendingTasks(taskList))
+    .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
+  const htmlBody = formatAsHtmlTable(tasks)
+  MailApp.sendEmail(MAIL_RECIPIENT, MAIL_SUBJECT, "", { htmlBody })
 }
