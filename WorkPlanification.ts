@@ -1,3 +1,5 @@
+type BusinessDayMatrix = Date[][]
+
 const MILLIS_PER_DAY = 24 * 60 * 60 * 1000
 
 const TASK_LIST_ID = 'MDgxOTY1NjgyMzU1ODA5MzUwMzY6MDow'
@@ -20,7 +22,7 @@ const TASK_DESCRIPTION_TEMPLATE = "Dia presencial D de T"
  * @param monthNumber month of the year (0 to 11)
  * @returns 
  */
- function calculateBusinessDays(monthNumber: number): Date[][] {
+ function calculateBusinessDays(monthNumber: number): BusinessDayMatrix {
   let businessDayMatrix: Date[][] = []
   let itDate = new Date()
   let itWeek = 0
