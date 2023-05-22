@@ -1,4 +1,6 @@
 import {calendar_v3} from 'googleapis'
+import { minusHours } from './Types'
+
 /**
  * Perform a full sync to list all calendars and logs the result
  */
@@ -17,7 +19,7 @@ function listCalendars() {
 }
 
 /**
- * Returns all events in an specific calendar (identified by its id) for a given period of time in the past
+ * Returns all events in an specific calendar in a given period of time in the past
  * @param calendarId calendar id to search events
  * @param minutesInThePast start time of events should be no older than this number of minutes (and up to now)
  * @returns 

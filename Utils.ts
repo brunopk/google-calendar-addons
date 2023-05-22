@@ -9,7 +9,7 @@ declare type ExtendedTask = tasks_v1.Schema$Task & {
 /**
  * Calculates the resulting date of performing `date - minutes`
  */
-function minusHours(date: Date, hours: number): Date{
+function minusHours(date: Date, hours: number): Date {
   return new Date(date.getTime() - hours * MILLISECONDS_PER_HOUR)
 }
 

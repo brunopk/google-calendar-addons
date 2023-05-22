@@ -1,21 +1,5 @@
-import { calendar_v3, tasks_v1 } from "googleapis";
+import { listTaskLists, listPendingTasks, formatAsHtmlTable } from "./Types";
 
-declare type ExtendedTask = tasks_v1.Schema$Task & {
-  taskList: tasks_v1.Schema$TaskList
-}
-
-/**
- * Returns the ids of all task list
- */
- declare function listTaskLists() : tasks_v1.Schema$TaskList[]
-
-/**
- * List all pending (uncompleted) tasks until now
- * @param taskListId 
- */
-declare function listPendingTasks(taskList: tasks_v1.Schema$TaskList) : ExtendedTask[]
-
-declare function formatAsHtmlTable(tasks : ExtendedTask[]): string
 
 function sendMailForPendingTasks() {
   const MAIL_RECIPIENT = PropertiesService.getScriptProperties().getProperty(PROPERTY_KEYS.MAIL_RECIPIENT)
