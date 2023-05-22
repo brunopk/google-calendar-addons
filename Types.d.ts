@@ -4,7 +4,7 @@ declare type ExtendedTask = tasks_v1.Schema$Task & {
   taskList: tasks_v1.Schema$TaskList
 }
 
-declare function isEqualYearMonthDay(d1: Date, d2: Date)
+declare function isEqualYearMonthDay(d1: Date, d2: Date): boolean
 
 
 declare function calculateBusinessDays(monthNumber: number): Date[][] 
