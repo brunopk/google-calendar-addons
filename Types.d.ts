@@ -4,6 +4,12 @@ declare type ExtendedTask = tasks_v1.Schema$Task & {
   taskList: tasks_v1.Schema$TaskList
 }
 
+declare function isMonday(date: Date): boolean 
+
+
+declare function isFriday(date: Date): boolean 
+
+
 declare function isEqualYearMonthDay(d1: Date, d2: Date): boolean
 
 

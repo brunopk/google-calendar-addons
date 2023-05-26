@@ -3,6 +3,7 @@ import { tasks_v1 } from "googleapis"
 declare const MILLISECONDS_PER_HOUR : number
 
 
+
 declare type ExtendedTask = tasks_v1.Schema$Task & {
   taskList: tasks_v1.Schema$TaskList
 }
@@ -13,6 +14,7 @@ declare type ExtendedTask = tasks_v1.Schema$Task & {
 function minusHours(date: Date, hours: number): Date {
   return new Date(date.getTime() - hours * MILLISECONDS_PER_HOUR)
 }
+
 
 function formatAsHtmlTable(tasks : ExtendedTask[]): string {
   let tableHeader = 
@@ -43,3 +45,11 @@ function isEqualByYearMonthDay(d1: Date, d2: Date): boolean {
 }
 
 
+function isMonday(date: Date): boolean {
+  return date.getDay() == 1
+}
+
+
+function isFriday(date: Date): boolean {
+  return date.getDay() == 5
+}
