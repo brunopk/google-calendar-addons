@@ -10,9 +10,9 @@ function listCalendars() {
 
   do {
     calendars = Calendar.CalendarList?.list({pageToken})
-    for(let i in calendars?.items) {
-      let item : calendar_v3.Schema$CalendarListEntry = calendars?.items[i]
-      console.log(`summary: ${item.summary}, id: ${item.id}`)
+    for (let i = 0; i < (calendars?.items ? calendars?.items?.length : 0); i++) {
+      const item = calendars?.items ? calendars?.items[i] : undefined
+      console.log(`summary: ${item?.summary}, id: ${item?.id}`)
     }
     pageToken = calendars?.nextPageToken
   } while (pageToken != null)
