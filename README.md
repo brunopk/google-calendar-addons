@@ -10,11 +10,26 @@ Define the corresponding properties before running (see https://developers.googl
 
 ## Testing
 
-Run:
-
-```shell
-npm test
-```
+1. Set the following configuration in `.vscode/launch.json`:
+  ```json
+  {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node-terminal",
+        "name": "Debug Current TS File (ts-node)",
+        "request": "launch",
+        "command": "npx ts-node -- ${fileBasenameNoExtension}",
+        "cwd": "${fileDirname}"
+      },
+    ]
+  }
+  ```
+3. Copy all functions to `Test.ts`
+4. Go to "Run and Debug" in Visual Code
 
 ## Common issues
 
