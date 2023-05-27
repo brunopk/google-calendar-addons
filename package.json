@@ -4,8 +4,8 @@
   "description": "Google Calendar Addons",
   "main": "Principal.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "test": "ts-mocha test/*.ts"
   },
   "repository": {
     "type": "git",
@@ -22,9 +22,14 @@
     "googleapis": "^118.0.0"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.2.5",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.8"
+    "mocha": "^10.2.0",
+    "prettier": "^2.8.8",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^5.0.4"
   }
 }

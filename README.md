@@ -2,9 +2,23 @@
 
 Google Calendar Addons
 
-Define the corresponding properties (see https://developers.google.com/apps-script/reference/properties?hl=en)
+Node version: v16.17.0
 
+## Running on Google App Scripts
+
+Define the corresponding properties before running (see https://developers.google.com/apps-script/reference/properties?hl=en)
+
+## Testing
+
+Run:
+
+```shell
+npm test
 ```
+
+## Common issues
+
+```shell
 ENOENT: no such file or directory, open '~/git/google-calendar-addons/appsscript.json'
 ```
 
