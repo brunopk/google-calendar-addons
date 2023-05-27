@@ -1,5 +1,3 @@
-import { isFriday, isMonday } from "./Types"
-
 type OfficeDayDistribution = {
   dayDistribution: boolean[],
   meetsMinimumPercentageCondition: boolean,
@@ -7,7 +5,6 @@ type OfficeDayDistribution = {
   totalAssignedMondays: number,
   totalAssignedFridays: number
 }
-
 
 type BusinessDayArray = {
   businessDays: Date[],
@@ -43,7 +40,6 @@ const TASK_DESCRIPTION_TEMPLATE = "Dia presencial D de T"
 
 
 function copyDistribution(source: OfficeDayDistribution, dest: OfficeDayDistribution) {
-
   dest.dayDistribution = source.dayDistribution.slice(0)
   dest.meetsMinimumPercentageCondition = source.meetsMinimumPercentageCondition
   dest.totalAssignedDays = source.totalAssignedDays

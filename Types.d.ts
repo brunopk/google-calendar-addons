@@ -1,13 +1,19 @@
 import { tasks_v1 } from "googleapis"
 
+declare global {
+  function formatAsHtmlTable(tasks: ExtendedTask[]): string
+
+  function isMonday(date: Date): boolean
+
+  function isFriday(date: Date): boolean
+
+  function generateOfficeDayDistribution(): OfficeDayDistribution {
+}
+
 declare type ExtendedTask = tasks_v1.Schema$Task & {
   taskList: tasks_v1.Schema$TaskList
 }
 
-declare function isMonday(date: Date): boolean 
-
-
-declare function isFriday(date: Date): boolean 
 
 
 declare function isEqualYearMonthDay(d1: Date, d2: Date): boolean
@@ -28,6 +34,3 @@ declare function listTaskLists() : tasks_v1.Schema$TaskList[]
  * @param taskListId 
  */
 declare function listPendingTasks(taskList: tasks_v1.Schema$TaskList) : ExtendedTask[]
-
-
-declare function formatAsHtmlTable(tasks : ExtendedTask[]): string

@@ -1,4 +1,4 @@
-import { listTaskLists, listPendingTasks, formatAsHtmlTable } from "./Types";
+import { listTaskLists, listPendingTasks } from "./Types"
 
 
 function sendMailForPendingTasks() {
