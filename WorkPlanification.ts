@@ -1,3 +1,5 @@
+// import {isFriday, isMonday} from './Utils'
+
 type OfficeDayDistribution = {
   dayDistribution: boolean[],
   meetsMinimumPercentageCondition: boolean,
@@ -202,3 +204,6 @@ function generateOfficeDayDistribution(): OfficeDayDistribution {
 
   return bestFoundDistribution
 }
+
+
+export { generateOfficeDayDistribution }

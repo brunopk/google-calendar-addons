@@ -7,6 +7,7 @@ Node version: v16.17.0
 ## Running on Google App Scripts
 
 Define the corresponding properties before running (see https://developers.google.com/apps-script/reference/properties?hl=en)
+Before uploading code to Google Apps Script remove or comment out all `imports ...` and before running any function remove `Test.gs` and `test/test.gs`
 
 ## Testing
 
@@ -30,6 +31,13 @@ Define the corresponding properties before running (see https://developers.googl
   ```
 3. Copy all functions to `Test.ts`
 4. Go to "Run and Debug" in Visual Code
+
+
+Other way to test code is with mocha:
+
+```shell
+npm run test
+```
 
 ## Common issues
 

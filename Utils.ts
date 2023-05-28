@@ -53,3 +53,8 @@ function isMonday(date: Date): boolean {
 function isFriday(date: Date): boolean {
   return date.getDay() == 5
 }
+
+exports = {
+  isFriday,
+  isMonday
+}
