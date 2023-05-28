@@ -1,22 +1,5 @@
 // import {isFriday, isMonday} from './Utils'
 
-type OfficeDayDistribution = {
-  dayDistribution: boolean[],
-  meetsMinimumPercentageCondition: boolean,
-  totalAssignedDays: number,
-  totalAssignedMondays: number,
-  totalAssignedFridays: number
-}
-
-type BusinessDayArray = {
-  businessDays: Date[],
-  totalFridays: number,
-  totalMondays: number,
-  totalDays: number
-}
-
-
-
 const TASK_LIST_ID = 'MDgxOTY1NjgyMzU1ODA5MzUwMzY6MDow'
 
 
@@ -41,7 +24,7 @@ const TASK_DESCRIPTION_TEMPLATE = "Dia presencial D de T"
 
 
 
-function copyDistribution(source: OfficeDayDistribution, dest: OfficeDayDistribution) {
+function copyDistribution(source: OfficeDayArray, dest: OfficeDayArray) {
   dest.dayDistribution = source.dayDistribution.slice(0)
   dest.meetsMinimumPercentageCondition = source.meetsMinimumPercentageCondition
   dest.totalAssignedDays = source.totalAssignedDays
@@ -50,7 +33,7 @@ function copyDistribution(source: OfficeDayDistribution, dest: OfficeDayDistribu
 }
 
 
-function isBetterOrEqual(first: OfficeDayDistribution, second: OfficeDayDistribution, businessDayArray: BusinessDayArray): boolean {
+function isBetterOrEqual(first: OfficeDayArray, second: OfficeDayArray, businessDayArray: BusinessDayArray): boolean {
 
   if (!second.meetsMinimumPercentageCondition) {
     return true
@@ -69,7 +52,7 @@ function isBetterOrEqual(first: OfficeDayDistribution, second: OfficeDayDistribu
 }
 
 
-function addNewDate(currentDistribution: OfficeDayDistribution, dayIndex: number, newDate: Date): void {
+function addNewDate(currentDistribution: OfficeDayArray, dayIndex: number, newDate: Date): void {
 
   currentDistribution.dayDistribution[dayIndex] = true
   currentDistribution.totalAssignedDays++
@@ -79,12 +62,15 @@ function addNewDate(currentDistribution: OfficeDayDistribution, dayIndex: number
     isMonday(newDate) ? currentDistribution.totalAssignedMondays + 1: currentDistribution.totalAssignedMondays
 }
 
-
-function distributeOfficeDays(currentDistribution: OfficeDayDistribution, bestFoundDistribution: OfficeDayDistribution, currentDayIndex: number, businessDayArray: BusinessDayArray, minimumOfficeDayPercentage: number) {
-  
+function distributeOfficeDaysWithBacktracking(
+  currentDistribution: OfficeDayDistribution,
+  bestFoundDistribution: OfficeDayDistribution,
+  currentDayIndex: number,
+  businessDayArray: BusinessDayArray,
+  minimumOfficeDayPercentage: number
+) {
   const percentageOfDistributedDays = (currentDistribution.totalAssignedDays * 100) / businessDayArray.totalDays
   currentDistribution.meetsMinimumPercentageCondition = percentageOfDistributedDays > minimumOfficeDayPercentage
-
 
   // Border case  (no days to distribute)
 
@@ -93,44 +79,48 @@ function distributeOfficeDays(currentDistribution: OfficeDayDistribution, bestFo
     return
   }
 
-  // Recursive cases 
+  // Recursive cases
 
   const leftBusinessDays = businessDayArray.totalDays - currentDayIndex
-  const percentageOfAvailableDays = leftBusinessDays * 100 / businessDayArray.totalDays
+  const percentageOfAvailableDays = (leftBusinessDays * 100) / businessDayArray.totalDays
 
-  // Prune predicate 
+  // Prune predicate
 
-  if ( percentageOfDistributedDays + percentageOfAvailableDays > minimumOfficeDayPercentage) {
-    
-    // Checks if currentDistribution is the final answer 
+  if (percentageOfDistributedDays + percentageOfAvailableDays > minimumOfficeDayPercentage) {
+    // Checks if currentDistribution is the final answer
 
     if (percentageOfDistributedDays > minimumOfficeDayPercentage) {
-      
       if (isBetterOrEqual(currentDistribution, bestFoundDistribution, businessDayArray)) {
         copyDistribution(currentDistribution, bestFoundDistribution)
       }
 
       // Otherwise ... continue
-
     } else {
-
-      let currentDistributionCopy1 = generateBlankOfficeDayDistribution(businessDayArray)
+      const currentDistributionCopy1 = generateBlankOfficeDayDistribution(businessDayArray)
       copyDistribution(currentDistribution, currentDistributionCopy1)
-      distributeOfficeDays(currentDistribution, bestFoundDistribution, currentDayIndex + 1, businessDayArray, minimumOfficeDayPercentage)
-    
-     
-      let currentDistributionCopy2 = generateBlankOfficeDayDistribution(businessDayArray)
+      distributeOfficeDaysWithBacktracking(
+        currentDistribution,
+        bestFoundDistribution,
+        currentDayIndex + 1,
+        businessDayArray,
+        minimumOfficeDayPercentage
+      )
+
+      const currentDistributionCopy2 = generateBlankOfficeDayDistribution(businessDayArray)
       copyDistribution(currentDistribution, currentDistributionCopy2)
       addNewDate(currentDistributionCopy2, currentDayIndex, businessDayArray.businessDays[currentDayIndex])
-      distributeOfficeDays(currentDistributionCopy2, bestFoundDistribution, currentDayIndex + 1, businessDayArray, minimumOfficeDayPercentage)
-    
+      distributeOfficeDaysWithBacktracking(
+        currentDistributionCopy2,
+        bestFoundDistribution,
+        currentDayIndex + 1,
+        businessDayArray,
+        minimumOfficeDayPercentage
+      )
     }
-  } 
-   
+  }
 }
 
-
-function generateBlankOfficeDayDistribution(businessDayArray: BusinessDayArray): OfficeDayDistribution {
+function generateBlankOfficeDayDistribution(businessDayArray: BusinessDayArray): OfficeDayArray {
   let dayDistribution: boolean[] = []
   for(let i = 0; i < businessDayArray.totalDays; i++) {
     dayDistribution.push(false)
@@ -144,8 +134,7 @@ function generateBlankOfficeDayDistribution(businessDayArray: BusinessDayArray):
   }
 }
 
-
-function generateWorstOfficeDayDistribution(businessDayArray: BusinessDayArray): OfficeDayDistribution {
+function generateWorstOfficeDayDistribution(businessDayArray: BusinessDayArray): OfficeDayArray {
   let dayDistribution: boolean[] = []
   for(let i = 0; i < businessDayArray.totalDays; i++) {
     dayDistribution.push(true)
@@ -159,13 +148,8 @@ function generateWorstOfficeDayDistribution(businessDayArray: BusinessDayArray):
   }
 }
 
-/**
- * Generate and returns a matrix where each row represents a week and each column a business day of the week
- * @param monthNumber month of the year (0 to 11)
- * @returns 
- */
-function generateBusinessDayArray(monthNumber: number): BusinessDayArray {
-  let businessDayArray: BusinessDayArray = {
+function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): BusinessDayArray {
+  const businessDayArray: BusinessDayArray = {
     businessDays: [],
     totalDays: 0,
     totalMondays: 0,
@@ -180,30 +164,42 @@ function generateBusinessDayArray(monthNumber: number): BusinessDayArray {
   itDate.setMilliseconds(0)
 
   while (itDate.getMonth() < monthNumber + 1) {
-    if (itDate.getDay() >= 1 && itDate.getDay() <= 5) {
+    if (
+      itDate.getDay() >= 1 &&
+      itDate.getDay() <= 5 &&
+      excludedDays.findIndex((excludedDay) => isEqualYearMonthDay(itDate, excludedDay)) == -1
+    ) {
       businessDayArray.businessDays.push(itDate)
       businessDayArray.totalDays++
-      businessDayArray.totalMondays = isMonday(itDate) ? businessDayArray.totalMondays + 1 : businessDayArray.totalMondays
-      businessDayArray.totalFridays = isFriday(itDate) ? businessDayArray.totalFridays + 1 : businessDayArray.totalFridays
+      businessDayArray.totalMondays = isMonday(itDate)
+        ? businessDayArray.totalMondays + 1
+        : businessDayArray.totalMondays
+      businessDayArray.totalFridays = isFriday(itDate)
+        ? businessDayArray.totalFridays + 1
+        : businessDayArray.totalFridays
     }
     itDate = new Date(itDate.getTime() + MILLISECONDS_PER_DAY)
   }
- 
+
   return businessDayArray
 }
 
+function generateOfficeDayArray(
+  businessDayArray: BusinessDayArray,
+  minimumOfficeDayPercentage: number
+): OfficeDayArray {
+  const currentDistribution = generateBlankOfficeDayDistribution(businessDayArray)
+  const bestFoundDistribution = generateWorstOfficeDayDistribution(businessDayArray)
 
-function generateOfficeDayDistribution(): OfficeDayDistribution {
-  // 4 just for testing
-  const businessDayArray = generateBusinessDayArray(4)
-  let currentDistribution = generateBlankOfficeDayDistribution(businessDayArray)
-  let bestFoundDistribution = generateWorstOfficeDayDistribution(businessDayArray)
-
-  // 60 just for testing
-  distributeOfficeDays(currentDistribution, bestFoundDistribution, 0, businessDayArray, 60)
+  distributeOfficeDaysWithBacktracking(
+    currentDistribution,
+    bestFoundDistribution,
+    0,
+    businessDayArray,
+    minimumOfficeDayPercentage
+  )
 
   return bestFoundDistribution
 }
 
-
-export { generateOfficeDayDistribution }
+export { generateOfficeDayArray }

@@ -1,20 +1,41 @@
 import { tasks_v1 } from "googleapis"
 
 declare global {
+  type BusinessDayArray = {
+    businessDays: Date[]
+    totalFridays: number
+    totalMondays: number
+    totalDays: number
+  }
+
+  type ExtendedTask = tasks_v1.Schema$Task & { taskList: tasks_v1.Schema$TaskList }
+
+  type OfficeDayArray = {
+    dayDistribution: boolean[]
+    meetsMinimumPercentageCondition: boolean
+    totalAssignedDays: number
+    totalAssignedMondays: number
+    totalAssignedFridays: number
+  }
+
   function formatAsHtmlTable(tasks: ExtendedTask[]): string
+
+  function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): BusinessDayArray
+
+  /**
+   * Determines which of all days in `businessDayArray` will be selected as office days
+   * @param businessDayArray all available business days
+   * @param minimumOfficeDayPercentage minimum office day percentage (0 to 100)
+   */
+  function generateOfficeDayArray(
+    businessDayArray: BusinessDayArray,
+    minimumOfficeDayPercentage: number
+  ): OfficeDayArray
 
   function isMonday(date: Date): boolean
 
   function isFriday(date: Date): boolean
-
-  function generateOfficeDayDistribution(): OfficeDayDistribution {
 }
-
-declare type ExtendedTask = tasks_v1.Schema$Task & {
-  taskList: tasks_v1.Schema$TaskList
-}
-
-
 
 declare function isEqualYearMonthDay(d1: Date, d2: Date): boolean
 
