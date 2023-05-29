@@ -6,8 +6,11 @@ Node version: v16.17.0
 
 ## Running on Google App Scripts
 
-Define the corresponding properties before running (see https://developers.google.com/apps-script/reference/properties?hl=en)
-Before uploading code to Google Apps Script remove or comment out all `imports ...` and before running any function remove `Test.gs` and `test/test.gs`
+Define the corresponding properties before running (see [Property service](https://developers.google.com/apps-script/reference/properties?hl=en)). Before uploading code to Google Apps Script :
+
+- Remove or comment out all `imports ...` and before running any function remove `Test.gs` and `test/test.gs`.
+- Remove or comment out all constant definition in every file but `Constants/ts` to avoid duplication (they are redefined on `WorkPlanification.ts` and other files to work with mocha test).
+
 
 ## Testing
 
