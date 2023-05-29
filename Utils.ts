@@ -39,22 +39,16 @@ function formatAsHtmlTable(tasks : ExtendedTask[]): string {
   return `<table">${tableHeader}${rows}</table>`
 }
 
-
 function isEqualByYearMonthDay(d1: Date, d2: Date): boolean {
   return d1.getFullYear() == d2.getFullYear() && d1.getMonth() == d2.getMonth() && d1.getDay() == d2.getDay()
 }
-
 
 function isMonday(date: Date): boolean {
   return date.getDay() == 1
 }
 
-
 function isFriday(date: Date): boolean {
   return date.getDay() == 5
 }
 
-exports = {
-  isFriday,
-  isMonday
-}
+export { isEqualByYearMonthDay, isFriday, isMonday }

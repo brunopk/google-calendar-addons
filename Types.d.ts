@@ -1,6 +1,8 @@
 import { tasks_v1 } from "googleapis"
 
 declare global {
+  const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 100
+
   type BusinessDayArray = {
     businessDays: Date[]
     totalFridays: number
@@ -32,12 +34,12 @@ declare global {
     minimumOfficeDayPercentage: number
   ): OfficeDayArray
 
-  function isMonday(date: Date): boolean
+  function isEqualByYearMonthDay(d1: Date, d2: Date): boolean
 
   function isFriday(date: Date): boolean
-}
 
-declare function isEqualYearMonthDay(d1: Date, d2: Date): boolean
+  function isMonday(date: Date): boolean
+}
 
 
 declare function calculateBusinessDays(monthNumber: number): Date[][] 

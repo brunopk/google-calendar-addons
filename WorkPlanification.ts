@@ -1,28 +1,6 @@
-// import {isFriday, isMonday} from './Utils'
+import { isFriday, isMonday, isEqualByYearMonthDay } from "./Utils"
 
-const TASK_LIST_ID = 'MDgxOTY1NjgyMzU1ODA5MzUwMzY6MDow'
-
-
-
-const FIRST_DAY_OF_MONTH = new Date("2023-06-01T00:00:00.000Z")
-
-
-// free days per month
-const NUMBER_OF_FREE_DAYS = 0
-
-
-// min percentage of work days for current month
-const MIN_PERCENTAGE_OF_WORK_DAYS = 60
-
-
-
-const TASK_TITLE = "Día presencial"
-
-
-
-const TASK_DESCRIPTION_TEMPLATE = "Dia presencial D de T"
-
-
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000
 
 function copyDistribution(source: OfficeDayArray, dest: OfficeDayArray) {
   dest.dayDistribution = source.dayDistribution.slice(0)
@@ -167,7 +145,7 @@ function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): Bu
     if (
       itDate.getDay() >= 1 &&
       itDate.getDay() <= 5 &&
-      excludedDays.findIndex((excludedDay) => isEqualYearMonthDay(itDate, excludedDay)) == -1
+      excludedDays.findIndex((excludedDay) => isEqualByYearMonthDay(itDate, excludedDay)) == -1
     ) {
       businessDayArray.businessDays.push(itDate)
       businessDayArray.totalDays++
@@ -202,4 +180,4 @@ function generateOfficeDayArray(
   return bestFoundDistribution
 }
 
-export { generateOfficeDayArray }
+export { generateBusinessDayArray, generateOfficeDayArray }
