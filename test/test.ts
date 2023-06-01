@@ -1,8 +1,8 @@
 import assert from "assert"
 import { isEqualByYearMonthDay } from "../Utils"
-import { generateOfficeDayArray, generateBusinessDayArray } from "../WorkPlanification"
+import { generateOfficeDayArray, generateBusinessDayArray } from "../WorkPlanning"
 
-describe("WorkPlanification", function () {
+describe("WorkPlanning", function () {
   it("Test generateOfficeDayArray excluding some days", function () {
     const excludedDays = [new Date("2023-01-04")]
     const businessDayArray = generateBusinessDayArray(0, excludedDays)
