@@ -8,21 +8,21 @@ type BusinessDayArray = {
 }
 
 type DaySelection = {
-  array: boolean[]
+  selection: boolean[]
   meetsMinimumPercentageCondition: boolean
-  totalAssignedDays: number
-  totalAssignedMondays: number
-  totalAssignedFridays: number
+  selectedDays: number
+  selectedMondays: number
+  selectedFridays: number
 }
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000
 
-function copyDistribution(source: DaySelection, dest: DaySelection) {
-  dest.array = source.array.slice(0)
+function copyDaySelection(source: DaySelection, dest: DaySelection) {
+  dest.selection = source.selection.slice(0)
   dest.meetsMinimumPercentageCondition = source.meetsMinimumPercentageCondition
-  dest.totalAssignedDays = source.totalAssignedDays
-  dest.totalAssignedFridays = source.totalAssignedFridays
-  dest.totalAssignedMondays = source.totalAssignedMondays
+  dest.selectedDays = source.selectedDays
+  dest.selectedMondays = source.selectedMondays
+  dest.selectedFridays = source.selectedFridays
 }
 
 function isBetterOrEqual(first: DaySelection, second: DaySelection, businessDayArray: BusinessDayArray): boolean {
@@ -30,13 +30,13 @@ function isBetterOrEqual(first: DaySelection, second: DaySelection, businessDayA
     return true
   }
 
-  const firstDayPercentage = (first.totalAssignedDays * 100) / businessDayArray.totalDays
-  const firstMondayPercentage = (first.totalAssignedMondays * 100) / businessDayArray.totalMondays
-  const firstFridayPercentage = (first.totalAssignedFridays * 100) / businessDayArray.totalFridays
+  const firstDayPercentage = (first.selectedDays * 100) / businessDayArray.totalDays
+  const firstMondayPercentage = (first.selectedMondays * 100) / businessDayArray.totalMondays
+  const firstFridayPercentage = (first.selectedFridays * 100) / businessDayArray.totalFridays
 
-  const secondDayPercentage = (second.totalAssignedDays * 100) / businessDayArray.totalDays
-  const secondMondayPercentage = (second.totalAssignedMondays * 100) / businessDayArray.totalMondays
-  const secondFridayPercentage = (second.totalAssignedFridays * 100) / businessDayArray.totalFridays
+  const secondDayPercentage = (second.selectedDays * 100) / businessDayArray.totalDays
+  const secondMondayPercentage = (second.selectedMondays * 100) / businessDayArray.totalMondays
+  const secondFridayPercentage = (second.selectedFridays * 100) / businessDayArray.totalFridays
 
   return (
     firstDayPercentage + firstMondayPercentage + firstFridayPercentage <=
@@ -44,31 +44,31 @@ function isBetterOrEqual(first: DaySelection, second: DaySelection, businessDayA
   )
 }
 
-function addNewDate(currentDistribution: DaySelection, dayIndex: number, newDate: Date): void {
-  currentDistribution.array[dayIndex] = true
-  currentDistribution.totalAssignedDays++
-  currentDistribution.totalAssignedFridays = isFriday(newDate)
-    ? currentDistribution.totalAssignedFridays + 1
-    : currentDistribution.totalAssignedFridays
-  currentDistribution.totalAssignedMondays = isMonday(newDate)
-    ? currentDistribution.totalAssignedMondays + 1
-    : currentDistribution.totalAssignedMondays
+function addNewDate(currentSelection: DaySelection, dayIndex: number, newDate: Date): void {
+  currentSelection.selection[dayIndex] = true
+  currentSelection.selectedDays++
+  currentSelection.selectedFridays = isFriday(newDate)
+    ? currentSelection.selectedFridays + 1
+    : currentSelection.selectedFridays
+  currentSelection.selectedMondays = isMonday(newDate)
+    ? currentSelection.selectedMondays + 1
+    : currentSelection.selectedMondays
 }
 
-function distributeOfficeDaysUsingBacktracking(
-  currentDistribution: DaySelection,
-  bestFoundDistribution: DaySelection,
+function findBestBusinessDaySelectionUsingBacktracking(
+  currentSelection: DaySelection,
+  bestFoundSelection: DaySelection,
   currentDayIndex: number,
   businessDayArray: BusinessDayArray,
-  minimumOfficeDayPercentage: number
+  minimumDayPercentage: number
 ) {
-  const percentageOfDistributedDays = (currentDistribution.totalAssignedDays * 100) / businessDayArray.totalDays
-  currentDistribution.meetsMinimumPercentageCondition = percentageOfDistributedDays > minimumOfficeDayPercentage
+  const dayPercentage = (currentSelection.selectedDays * 100) / businessDayArray.totalDays
+  currentSelection.meetsMinimumPercentageCondition = dayPercentage > minimumDayPercentage
 
   // Border case  (no days to distribute)
 
   if (currentDayIndex > businessDayArray.totalDays) {
-    copyDistribution(currentDistribution, bestFoundDistribution,)
+    copyDaySelection(currentSelection, bestFoundSelection)
     return
   }
 
@@ -79,65 +79,65 @@ function distributeOfficeDaysUsingBacktracking(
 
   // Prune predicate
 
-  if (percentageOfDistributedDays + percentageOfAvailableDays > minimumOfficeDayPercentage) {
+  if (dayPercentage + percentageOfAvailableDays > minimumDayPercentage) {
     // Checks if currentDistribution is the final answer
 
-    if (percentageOfDistributedDays > minimumOfficeDayPercentage) {
-      if (isBetterOrEqual(currentDistribution, bestFoundDistribution, businessDayArray)) {
-        copyDistribution(currentDistribution, bestFoundDistribution)
+    if (dayPercentage > minimumDayPercentage) {
+      if (isBetterOrEqual(currentSelection, bestFoundSelection, businessDayArray)) {
+        copyDaySelection(currentSelection, bestFoundSelection)
       }
 
       // Otherwise ... continue
     } else {
-      const currentDistributionCopy1 = generateBlankOfficeDayDistribution(businessDayArray)
-      copyDistribution(currentDistribution, currentDistributionCopy1)
-      distributeOfficeDaysUsingBacktracking(
-        currentDistribution,
-        bestFoundDistribution,
+      const currentSelectionCopy1 = generateEmptyBusinessDaySelection(businessDayArray)
+      copyDaySelection(currentSelection, currentSelectionCopy1)
+      findBestBusinessDaySelectionUsingBacktracking(
+        currentSelectionCopy1,
+        bestFoundSelection,
         currentDayIndex + 1,
         businessDayArray,
-        minimumOfficeDayPercentage
+        minimumDayPercentage
       )
 
-      const currentDistributionCopy2 = generateBlankOfficeDayDistribution(businessDayArray)
-      copyDistribution(currentDistribution, currentDistributionCopy2)
-      addNewDate(currentDistributionCopy2, currentDayIndex, businessDayArray.businessDays[currentDayIndex])
-      distributeOfficeDaysUsingBacktracking(
-        currentDistributionCopy2,
-        bestFoundDistribution,
+      const currentSelectionCopy2 = generateEmptyBusinessDaySelection(businessDayArray)
+      copyDaySelection(currentSelection, currentSelectionCopy2)
+      addNewDate(currentSelectionCopy2, currentDayIndex, businessDayArray.businessDays[currentDayIndex])
+      findBestBusinessDaySelectionUsingBacktracking(
+        currentSelectionCopy2,
+        bestFoundSelection,
         currentDayIndex + 1,
         businessDayArray,
-        minimumOfficeDayPercentage
+        minimumDayPercentage
       )
     }
   }
 }
 
-function generateBlankOfficeDayDistribution(businessDayArray: BusinessDayArray): DaySelection {
-  const dayDistribution: boolean[] = []
+function generateEmptyBusinessDaySelection(businessDayArray: BusinessDayArray): DaySelection {
+  const daySelection: boolean[] = []
   for (let i = 0; i < businessDayArray.totalDays; i++) {
-    dayDistribution.push(false)
+    daySelection.push(false)
   }
   return {
-    dayDistribution,
+    selection: daySelection,
     meetsMinimumPercentageCondition: false,
-    totalAssignedDays: 0,
-    totalAssignedFridays: 0,
-    totalAssignedMondays: 0
+    selectedDays: 0,
+    selectedMondays: 0,
+    selectedFridays: 0
   }
 }
 
-function generateWorstOfficeDayDistribution(businessDayArray: BusinessDayArray): DaySelection {
-  const dayDistribution: boolean[] = []
+function generateWorstBusinessDaySelection(businessDayArray: BusinessDayArray): DaySelection {
+  const daySelection: boolean[] = []
   for (let i = 0; i < businessDayArray.totalDays; i++) {
-    dayDistribution.push(true)
+    daySelection.push(true)
   }
   return {
-    array: dayDistribution,
+    selection: daySelection,
     meetsMinimumPercentageCondition: true,
-    totalAssignedDays: businessDayArray.totalDays,
-    totalAssignedFridays: businessDayArray.totalFridays,
-    totalAssignedMondays: businessDayArray.totalMondays
+    selectedDays: businessDayArray.totalDays,
+    selectedMondays: businessDayArray.totalMondays,
+    selectedFridays: businessDayArray.totalFridays
   }
 }
 
@@ -180,17 +180,17 @@ function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): Bu
 function selectDays(monthNumber: number, excludedDays: Date[], minimumDayPercentage: number): Date[] {
   const selectedDays: Date[] = []
   const businessDayArray = generateBusinessDayArray(monthNumber, excludedDays)
-  const currentDistribution = generateBlankOfficeDayDistribution(businessDayArray)
-  const bestFoundDistribution = generateWorstOfficeDayDistribution(businessDayArray)
+  const currentSelection = generateEmptyBusinessDaySelection(businessDayArray)
+  const bestFoundSelection = generateWorstBusinessDaySelection(businessDayArray)
 
-  distributeOfficeDaysUsingBacktracking(
-    currentDistribution,
-    bestFoundDistribution,
+  findBestBusinessDaySelectionUsingBacktracking(
+    currentSelection,
+    bestFoundSelection,
     0,
     businessDayArray,
     minimumDayPercentage
   )
-  bestFoundDistribution.array.forEach((isDaySelected, dayIndex) => {
+  bestFoundSelection.selection.forEach((isDaySelected, dayIndex) => {
     if (isDaySelected) {
       selectedDays.push(businessDayArray.businessDays[dayIndex])
     }
