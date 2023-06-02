@@ -3,34 +3,11 @@ import { tasks_v1 } from "googleapis"
 declare global {
   const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 100
 
-  type BusinessDayArray = {
-    businessDays: Date[]
-    totalFridays: number
-    totalMondays: number
-    totalDays: number
-  }
-
-  type DaySelection = {
-    array: boolean[]
-    meetsMinimumPercentageCondition: boolean
-    totalAssignedDays: number
-    totalAssignedMondays: number
-    totalAssignedFridays: number
-  }
-
   type ExtendedTask = tasks_v1.Schema$Task & { taskList: tasks_v1.Schema$TaskList }
 
   function formatAsHtmlTable(tasks: ExtendedTask[]): string
 
   function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): BusinessDayArray
-
-  /**
-   * Determines the best selection of days in `businessDayArray`.
-   * Selected days will be marked as `true` and discarded days as `false`.
-   * @param businessDayArray all available business days
-   * @param minimumDayPercentage minimum office day percentage (0 to 100)
-   */
-  function selectDays(businessDayArray: BusinessDayArray, minimumDayPercentage: number): boolean[]
 
   function isEqualByYearMonthDay(d1: Date, d2: Date): boolean
 
@@ -44,7 +21,7 @@ declare function minusHours(date: Date, hours: number): Date
 /**
  * Returns the ids of all task list
  */
-declare function listTaskLists() : tasks_v1.Schema$TaskList[]
+declare function listTaskLists(): tasks_v1.Schema$TaskList[]
 
 /**
  * List all pending (uncompleted) tasks until now

@@ -1,5 +1,20 @@
 import { isFriday, isMonday, isEqualByYearMonthDay } from "./Utils"
 
+type BusinessDayArray = {
+  businessDays: Date[]
+  totalFridays: number
+  totalMondays: number
+  totalDays: number
+}
+
+type DaySelection = {
+  array: boolean[]
+  meetsMinimumPercentageCondition: boolean
+  totalAssignedDays: number
+  totalAssignedMondays: number
+  totalAssignedFridays: number
+}
+
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000
 
 function copyDistribution(source: DaySelection, dest: DaySelection) {
@@ -162,7 +177,9 @@ function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): Bu
   return businessDayArray
 }
 
-function generateOfficeDayArray(businessDayArray: BusinessDayArray, minimumOfficeDayPercentage: number): DaySelection {
+function selectDays(monthNumber: number, excludedDays: Date[], minimumDayPercentage: number): Date[] {
+  const selectedDays: Date[] = []
+  const businessDayArray = generateBusinessDayArray(monthNumber, excludedDays)
   const currentDistribution = generateBlankOfficeDayDistribution(businessDayArray)
   const bestFoundDistribution = generateWorstOfficeDayDistribution(businessDayArray)
 
@@ -171,10 +188,15 @@ function generateOfficeDayArray(businessDayArray: BusinessDayArray, minimumOffic
     bestFoundDistribution,
     0,
     businessDayArray,
-    minimumOfficeDayPercentage
+    minimumDayPercentage
   )
+  bestFoundDistribution.array.forEach((isDaySelected, dayIndex) => {
+    if (isDaySelected) {
+      selectedDays.push(businessDayArray.businessDays[dayIndex])
+    }
+  })
 
-  return bestFoundDistribution
+  return selectedDays
 }
 
-export { generateBusinessDayArray, generateOfficeDayArray }
+export { generateBusinessDayArray, selectDays }
