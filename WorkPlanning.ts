@@ -40,7 +40,7 @@ function addNewDate(currentDistribution: DaySelection, dayIndex: number, newDate
     : currentDistribution.totalAssignedMondays
 }
 
-function distributeOfficeDaysWithBacktracking(
+function distributeOfficeDaysUsingBacktracking(
   currentDistribution: DaySelection,
   bestFoundDistribution: DaySelection,
   currentDayIndex: number,
@@ -76,7 +76,7 @@ function distributeOfficeDaysWithBacktracking(
     } else {
       const currentDistributionCopy1 = generateBlankOfficeDayDistribution(businessDayArray)
       copyDistribution(currentDistribution, currentDistributionCopy1)
-      distributeOfficeDaysWithBacktracking(
+      distributeOfficeDaysUsingBacktracking(
         currentDistribution,
         bestFoundDistribution,
         currentDayIndex + 1,
@@ -87,7 +87,7 @@ function distributeOfficeDaysWithBacktracking(
       const currentDistributionCopy2 = generateBlankOfficeDayDistribution(businessDayArray)
       copyDistribution(currentDistribution, currentDistributionCopy2)
       addNewDate(currentDistributionCopy2, currentDayIndex, businessDayArray.businessDays[currentDayIndex])
-      distributeOfficeDaysWithBacktracking(
+      distributeOfficeDaysUsingBacktracking(
         currentDistributionCopy2,
         bestFoundDistribution,
         currentDayIndex + 1,
@@ -166,7 +166,7 @@ function generateOfficeDayArray(businessDayArray: BusinessDayArray, minimumOffic
   const currentDistribution = generateBlankOfficeDayDistribution(businessDayArray)
   const bestFoundDistribution = generateWorstOfficeDayDistribution(businessDayArray)
 
-  distributeOfficeDaysWithBacktracking(
+  distributeOfficeDaysUsingBacktracking(
     currentDistribution,
     bestFoundDistribution,
     0,
