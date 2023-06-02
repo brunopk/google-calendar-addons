@@ -10,29 +10,27 @@ declare global {
     totalDays: number
   }
 
-  type ExtendedTask = tasks_v1.Schema$Task & { taskList: tasks_v1.Schema$TaskList }
-
-  type OfficeDayArray = {
-    dayDistribution: boolean[]
+  type DaySelection = {
+    array: boolean[]
     meetsMinimumPercentageCondition: boolean
     totalAssignedDays: number
     totalAssignedMondays: number
     totalAssignedFridays: number
   }
 
+  type ExtendedTask = tasks_v1.Schema$Task & { taskList: tasks_v1.Schema$TaskList }
+
   function formatAsHtmlTable(tasks: ExtendedTask[]): string
 
   function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): BusinessDayArray
 
   /**
-   * Determines which of all days in `businessDayArray` will be selected as office days
+   * Determines the best selection of days in `businessDayArray`.
+   * Selected days will be marked as `true` and discarded days as `false`.
    * @param businessDayArray all available business days
-   * @param minimumOfficeDayPercentage minimum office day percentage (0 to 100)
+   * @param minimumDayPercentage minimum office day percentage (0 to 100)
    */
-  function generateOfficeDayArray(
-    businessDayArray: BusinessDayArray,
-    minimumOfficeDayPercentage: number
-  ): OfficeDayArray
+  function selectDays(businessDayArray: BusinessDayArray, minimumDayPercentage: number): boolean[]
 
   function isEqualByYearMonthDay(d1: Date, d2: Date): boolean
 
@@ -40,10 +38,6 @@ declare global {
 
   function isMonday(date: Date): boolean
 }
-
-
-declare function calculateBusinessDays(monthNumber: number): Date[][] 
-
 
 declare function minusHours(date: Date, hours: number): Date 
 
