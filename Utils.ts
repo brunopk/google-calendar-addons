@@ -1,13 +1,3 @@
-import { tasks_v1 } from "googleapis"
-
-declare const MILLISECONDS_PER_HOUR : number
-
-
-
-declare type ExtendedTask = tasks_v1.Schema$Task & {
-  taskList: tasks_v1.Schema$TaskList
-}
-
 /**
  * Calculates the resulting date of performing `date - minutes`
  */
