@@ -23,25 +23,24 @@ function toLocalDateString(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-
-function formatAsHtmlTable(tasks : ExtendedTask[]): string {
-  let tableHeader = 
-  "<tr> " +
-    "<td style=\"border: 1px solid black; font-weight: bold; padding: 1em;\">Lista de tareas</td>" +
-    "<td style=\"border: 1px solid black; font-weight: bold; padding: 1em;\">Título</td>" + 
-    "<td style=\"border: 1px solid black; font-weight: bold; padding: 1em;\">Fecha</td>" + 
-  "</tr>"
-  let rows = tasks.reduce((previousValue, task) => { 
+function formatAsHtmlTable(tasks: ExtendedTask[]): string {
+  const tableHeader =
+    "<tr> " +
+    '<td style="border: 1px solid black; font-weight: bold; padding: 1em;">Lista de tareas</td>' +
+    '<td style="border: 1px solid black; font-weight: bold; padding: 1em;">Título</td>' +
+    '<td style="border: 1px solid black; font-weight: bold; padding: 1em;">Fecha</td>' +
+    "</tr>"
+  const rows = tasks.reduce((previousValue, task) => {
     if (!task.due) {
       throw new Error(`Undefined due date for task "${task.title}"`)
     }
-    let dueDate = new Date(task.due)
+    const dueDate = new Date(task.due)
     return `${previousValue}
       <tr>
         <td style="border: 1px solid black; padding: 1em;">${task.taskList.title}</td>
         <td style="border: 1px solid black; padding: 1em;">${task.title}</td>
-        <td style="border: 1px solid black; padding: 1em;">${dueDate.toLocaleString()}</td>
-      </tr>` 
+        <td style="border: 1px solid black; padding: 1em;">${dueDate.toDateString()}</td>
+      </tr>`
   }, "")
 
   return `<table">${tableHeader}${rows}</table>`
