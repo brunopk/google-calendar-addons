@@ -1,4 +1,4 @@
-import { FOUND_BEST_OFFICE_DAY_SELECTION } from "./Constants"
+import { FOUND_BEST_OFFICE_DAY_SELECTION, PROPERTY_KEYS } from "./Constants"
 import {
   generateBusinessDayArray,
   generateEmptyBusinessDaySelection,
@@ -9,7 +9,7 @@ import {
 function sendMailForPendingTasks() {
   const MAIL_RECIPIENT = PropertiesService.getScriptProperties().getProperty(PROPERTY_KEYS.MAIL_RECIPIENT)
   const MAIL_SUBJECT = PropertiesService.getScriptProperties().getProperty(PROPERTY_KEYS.MAIL_SUBJECT)
-  
+
   if (MAIL_RECIPIENT == null) {
     throw new Error(`User property "${PROPERTY_KEYS.MAIL_RECIPIENT}" not defined, see https://developers.google.com/apps-script/reference/properties?hl=en`)
   }
@@ -18,7 +18,8 @@ function sendMailForPendingTasks() {
   }
 
   const taskLists = listTaskLists()
-  const tasks = taskLists.map((taskList) => listPendingTasks(taskList))
+  const tasks = taskLists
+    .map((taskList) => listPendingTasks(taskList))
     .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
   const htmlBody = formatAsHtmlTable(tasks)
   MailApp.sendEmail(MAIL_RECIPIENT, MAIL_SUBJECT, "", { htmlBody })
@@ -57,4 +58,4 @@ function foundBestOfficeDaySelection() {
   })
 }
 
-// export { foundBestOfficeDaySelection }
+export { foundBestOfficeDaySelection }

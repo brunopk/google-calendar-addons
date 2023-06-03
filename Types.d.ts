@@ -44,21 +44,20 @@ declare global {
 
   function isMonday(date: Date): boolean
 
+  /**
+   * List all pending (uncompleted) tasks until now
+   * @param taskList
+   */
+  function listPendingTasks(taskList: tasks_v1.Schema$TaskList): ExtendedTask[]
+
+  /**
+   * Returns the ids of all task list
+   */
+  function listTaskLists(): tasks_v1.Schema$TaskList[]
+
   function minusHours(date: Date, hours: number): Date
 
   function plusHours(date: Date, hours: number): Date
 
   function toLocalDateString(date: Date): string
 }
-
-
-/**
- * Returns the ids of all task list
- */
-declare function listTaskLists(): tasks_v1.Schema$TaskList[]
-
-/**
- * List all pending (uncompleted) tasks until now
- * @param taskListId 
- */
-declare function listPendingTasks(taskList: tasks_v1.Schema$TaskList) : ExtendedTask[]
