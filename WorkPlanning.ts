@@ -1,28 +1,12 @@
 import { isFriday, isMonday, isEqualByYearMonthDay } from "./Utils"
-
-type BusinessDayArray = {
-  businessDays: Date[]
-  totalFridays: number
-  totalMondays: number
-  totalDays: number
-}
-
-type DaySelection = {
-  selection: boolean[]
-  meetsMinimumPercentageCondition: boolean
-  selectedDays: number
-  selectedMondays: number
-  selectedFridays: number
-}
-
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000
+import { MILLISECONDS_PER_DAY } from "./Constants"
 
 function copyDaySelection(source: DaySelection, dest: DaySelection) {
   dest.selection = source.selection.slice(0)
   dest.meetsMinimumPercentageCondition = source.meetsMinimumPercentageCondition
-  dest.selectedDays = source.selectedDays
-  dest.selectedMondays = source.selectedMondays
-  dest.selectedFridays = source.selectedFridays
+  dest.totalDays = source.totalDays
+  dest.totalMondays = source.totalMondays
+  dest.totalFridays = source.totalFridays
 }
 
 function isBetterOrEqual(first: DaySelection, second: DaySelection, businessDayArray: BusinessDayArray): boolean {
@@ -30,13 +14,13 @@ function isBetterOrEqual(first: DaySelection, second: DaySelection, businessDayA
     return true
   }
 
-  const firstDayPercentage = (first.selectedDays * 100) / businessDayArray.totalDays
-  const firstMondayPercentage = (first.selectedMondays * 100) / businessDayArray.totalMondays
-  const firstFridayPercentage = (first.selectedFridays * 100) / businessDayArray.totalFridays
+  const firstDayPercentage = (first.totalDays * 100) / businessDayArray.totalDays
+  const firstMondayPercentage = (first.totalMondays * 100) / businessDayArray.totalMondays
+  const firstFridayPercentage = (first.totalFridays * 100) / businessDayArray.totalFridays
 
-  const secondDayPercentage = (second.selectedDays * 100) / businessDayArray.totalDays
-  const secondMondayPercentage = (second.selectedMondays * 100) / businessDayArray.totalMondays
-  const secondFridayPercentage = (second.selectedFridays * 100) / businessDayArray.totalFridays
+  const secondDayPercentage = (second.totalDays * 100) / businessDayArray.totalDays
+  const secondMondayPercentage = (second.totalMondays * 100) / businessDayArray.totalMondays
+  const secondFridayPercentage = (second.totalFridays * 100) / businessDayArray.totalFridays
 
   return (
     firstDayPercentage + firstMondayPercentage + firstFridayPercentage <=
@@ -46,13 +30,9 @@ function isBetterOrEqual(first: DaySelection, second: DaySelection, businessDayA
 
 function addNewDate(currentSelection: DaySelection, dayIndex: number, newDate: Date): void {
   currentSelection.selection[dayIndex] = true
-  currentSelection.selectedDays++
-  currentSelection.selectedFridays = isFriday(newDate)
-    ? currentSelection.selectedFridays + 1
-    : currentSelection.selectedFridays
-  currentSelection.selectedMondays = isMonday(newDate)
-    ? currentSelection.selectedMondays + 1
-    : currentSelection.selectedMondays
+  currentSelection.totalDays++
+  currentSelection.totalFridays = isFriday(newDate) ? currentSelection.totalFridays + 1 : currentSelection.totalFridays
+  currentSelection.totalMondays = isMonday(newDate) ? currentSelection.totalMondays + 1 : currentSelection.totalMondays
 }
 
 function findBestBusinessDaySelectionUsingBacktracking(
@@ -62,7 +42,7 @@ function findBestBusinessDaySelectionUsingBacktracking(
   businessDayArray: BusinessDayArray,
   minimumDayPercentage: number
 ) {
-  const dayPercentage = (currentSelection.selectedDays * 100) / businessDayArray.totalDays
+  const dayPercentage = (currentSelection.totalDays * 100) / businessDayArray.totalDays
   currentSelection.meetsMinimumPercentageCondition = dayPercentage > minimumDayPercentage
 
   // Border case  (no days to distribute)
@@ -121,9 +101,9 @@ function generateEmptyBusinessDaySelection(businessDayArray: BusinessDayArray): 
   return {
     selection: daySelection,
     meetsMinimumPercentageCondition: false,
-    selectedDays: 0,
-    selectedMondays: 0,
-    selectedFridays: 0
+    totalDays: 0,
+    totalMondays: 0,
+    totalFridays: 0
   }
 }
 
@@ -135,9 +115,9 @@ function generateWorstBusinessDaySelection(businessDayArray: BusinessDayArray): 
   return {
     selection: daySelection,
     meetsMinimumPercentageCondition: true,
-    selectedDays: businessDayArray.totalDays,
-    selectedMondays: businessDayArray.totalMondays,
-    selectedFridays: businessDayArray.totalFridays
+    totalDays: businessDayArray.totalDays,
+    totalMondays: businessDayArray.totalMondays,
+    totalFridays: businessDayArray.totalFridays
   }
 }
 
@@ -177,26 +157,9 @@ function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): Bu
   return businessDayArray
 }
 
-function selectDays(monthNumber: number, excludedDays: Date[], minimumDayPercentage: number): Date[] {
-  const selectedDays: Date[] = []
-  const businessDayArray = generateBusinessDayArray(monthNumber, excludedDays)
-  const currentSelection = generateEmptyBusinessDaySelection(businessDayArray)
-  const bestFoundSelection = generateWorstBusinessDaySelection(businessDayArray)
-
-  findBestBusinessDaySelectionUsingBacktracking(
-    currentSelection,
-    bestFoundSelection,
-    0,
-    businessDayArray,
-    minimumDayPercentage
-  )
-  bestFoundSelection.selection.forEach((isDaySelected, dayIndex) => {
-    if (isDaySelected) {
-      selectedDays.push(businessDayArray.businessDays[dayIndex])
-    }
-  })
-
-  return selectedDays
+export {
+  generateBusinessDayArray,
+  generateEmptyBusinessDaySelection,
+  generateWorstBusinessDaySelection,
+  findBestBusinessDaySelectionUsingBacktracking
 }
-
-export { generateBusinessDayArray, selectDays }
