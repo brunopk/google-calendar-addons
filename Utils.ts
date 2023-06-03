@@ -24,26 +24,17 @@ function toLocalDateString(date: Date): string {
 }
 
 function formatAsHtmlTable(tasks: ExtendedTask[]): string {
-  const tableHeader =
-    "<tr> " +
-    '<td style="border: 1px solid black; font-weight: bold; padding: 1em;">Lista de tareas</td>' +
-    '<td style="border: 1px solid black; font-weight: bold; padding: 1em;">Título</td>' +
-    '<td style="border: 1px solid black; font-weight: bold; padding: 1em;">Fecha</td>' +
-    "</tr>"
-  const rows = tasks.reduce((previousValue, task) => {
+  return tasks.reduce((previousValue, task) => {
     if (!task.due) {
       throw new Error(`Undefined due date for task "${task.title}"`)
     }
     const dueDate = new Date(task.due)
     return `${previousValue}
-      <tr>
-        <td style="border: 1px solid black; padding: 1em;">${task.taskList.title}</td>
-        <td style="border: 1px solid black; padding: 1em;">${task.title}</td>
-        <td style="border: 1px solid black; padding: 1em;">${dueDate.toDateString()}</td>
-      </tr>`
+      <p>Task list: ${task.taskList.title}</p>
+      <p>Task: ${task.title}</p>
+      <p>Date: ${dueDate.toDateString()}</p>
+      <br>`
   }, "")
-
-  return `<table">${tableHeader}${rows}</table>`
 }
 
 function isEqualByYearMonthDay(d1: Date, d2: Date): boolean {
