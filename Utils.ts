@@ -15,6 +15,24 @@ function minusHours(date: Date, hours: number): Date {
   return new Date(date.getTime() - hours * MILLISECONDS_PER_HOUR)
 }
 
+/**
+ * Calculates the resulting date of performing `date + minutes`
+ */
+function plusHours(date: Date, hours: number): Date {
+  return new Date(date.getTime() + hours * MILLISECONDS_PER_HOUR)
+}
+
+/**
+ * Format date as YYYY-MM-DD (using local time zone)
+ * @param date date to be formatted
+ */
+function toLocalDateString(date: Date): string {
+  const year = date.getFullYear().toString()
+  const month = (date.getMonth() + 1).toString().padStart(2, "0")
+  const day = date.getDate().toString().padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
 
 function formatAsHtmlTable(tasks : ExtendedTask[]): string {
   let tableHeader = 

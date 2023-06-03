@@ -14,9 +14,14 @@ declare global {
   function isFriday(date: Date): boolean
 
   function isMonday(date: Date): boolean
+
+  function minusHours(date: Date, hours: number): Date
+
+  function plusHours(date: Date, hours: number): Date
+
+  function toLocalDateString(date: Date): string
 }
 
-declare function minusHours(date: Date, hours: number): Date 
 
 /**
  * Returns the ids of all task list
