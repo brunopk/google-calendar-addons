@@ -1,7 +1,7 @@
 function createAllDayEvent(calendarId: string, title: string, date: Date, description: string) {
   const endDate = plusHours(date, 24)
 
-  console.info(`Adding all day event for ${date}`)
+  console.info(`Adding all day event on ${date}`)
 
   return Calendar.Events?.insert(
     {
