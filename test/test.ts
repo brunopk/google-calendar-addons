@@ -8,6 +8,11 @@ import {
 } from "../WorkPlanning"
 
 describe("WorkPlanning", function () {
+  it("Test generateBusinessDayArray", function () {
+    const businessDayArray = generateBusinessDayArray(6, [new Date("2023-07-18")])
+    assert.equal(businessDayArray.totalDays, 21)
+  })
+
   it("Test selectDays excluding some days", function () {
     const monthNumber = 1
     const excludedDays = [new Date("2023-01-04")]
