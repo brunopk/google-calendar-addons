@@ -38,4 +38,23 @@ describe("WorkPlanning", function () {
       }
     })
   })
+
+  it("Test selectDays excluding some days (1)", function () {
+    const monthNumber = 7
+    const excludedDays = [new Date("2023-07-18T00:00:00-03:00")]
+    const minimumDayPercentage = 60
+    const businessDayArray = generateBusinessDayArray(monthNumber, excludedDays)
+    const currentSelection = generateEmptyBusinessDaySelection(businessDayArray)
+    const bestFoundSelection = generateWorstBusinessDaySelection(businessDayArray)
+
+    findBestBusinessDaySelectionUsingBacktracking(
+      currentSelection,
+      bestFoundSelection,
+      0,
+      businessDayArray,
+      minimumDayPercentage
+    )
+
+    assert.equal(bestFoundSelection.totalDays, 12)
+  })
 })
