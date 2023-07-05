@@ -134,6 +134,7 @@ function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): Bu
   itDate.setMonth(monthNumber)
   itDate.setHours(0)
   itDate.setMinutes(0)
+  itDate.setSeconds(0)
   itDate.setMilliseconds(0)
 
   while (itDate.getMonth() < monthNumber + 1) {
