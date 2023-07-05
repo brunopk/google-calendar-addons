@@ -21,7 +21,7 @@ function sendMailForPendingTasks() {
   const tasks = taskLists
     .map((taskList) => listPendingTasks(taskList))
     .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
-  const htmlBody = formatAsHtmlTable(tasks)
+  const htmlBody = formatAsHtml(tasks)
   MailApp.sendEmail(MAIL_RECIPIENT, MAIL_SUBJECT, "", { htmlBody })
 }
 

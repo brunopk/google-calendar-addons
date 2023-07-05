@@ -23,16 +23,17 @@ function toLocalDateString(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-function formatAsHtmlTable(tasks: ExtendedTask[]): string {
+function formatAsHtml(tasks: ExtendedTask[]): string {
   return tasks.reduce((previousValue, task) => {
     if (!task.due) {
       throw new Error(`Undefined due date for task "${task.title}"`)
     }
     const dueDate = new Date(task.due)
     return `${previousValue}
-      <p>Task list: ${task.taskList.title}</p>
-      <p>Task: ${task.title}</p>
-      <p>Date: ${dueDate.toDateString()}</p>
+      <span>--------------------------------</span><br>
+      <span>Task list: ${task.taskList.title}</span><br>
+      <span>Task: ${task.title}</span><br>
+      <span>Date: ${dueDate.toDateString()}</span><br>
       <br>`
   }, "")
 }
