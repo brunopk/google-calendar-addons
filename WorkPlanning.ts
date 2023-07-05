@@ -131,13 +131,13 @@ function generateBusinessDayArray(monthNumber: number, excludedDays: Date[]): Bu
   let itDate = new Date()
 
   itDate.setDate(1)
-  itDate.setMonth(monthNumber)
+  itDate.setMonth(monthNumber - 1)
   itDate.setHours(0)
   itDate.setMinutes(0)
   itDate.setSeconds(0)
   itDate.setMilliseconds(0)
 
-  while (itDate.getMonth() < monthNumber + 1) {
+  while (itDate.getMonth() < monthNumber) {
     if (
       itDate.getDay() >= 1 &&
       itDate.getDay() <= 5 &&

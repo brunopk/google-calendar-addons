@@ -9,7 +9,7 @@ import {
 
 describe("WorkPlanning", function () {
   it("Test generateBusinessDayArray", function () {
-    const businessDayArray = generateBusinessDayArray(6, [new Date("2023-07-18T00:00:00-03:00")])
+    const businessDayArray = generateBusinessDayArray(7, [new Date("2023-07-18T00:00:00-03:00")])
     assert.equal(businessDayArray.totalDays, 20)
   })
 
