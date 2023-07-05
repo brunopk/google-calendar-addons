@@ -43,7 +43,7 @@ function findBestBusinessDaySelectionUsingBacktracking(
   minimumDayPercentage: number
 ) {
   const dayPercentage = (currentSelection.totalDays * 100) / businessDayArray.totalDays
-  currentSelection.meetsMinimumPercentageCondition = dayPercentage > minimumDayPercentage
+  currentSelection.meetsMinimumPercentageCondition = dayPercentage >= minimumDayPercentage
 
   // Border case  (no days to distribute)
 
@@ -62,7 +62,7 @@ function findBestBusinessDaySelectionUsingBacktracking(
   if (dayPercentage + percentageOfAvailableDays > minimumDayPercentage) {
     // Checks if currentDistribution is the final answer
 
-    if (dayPercentage > minimumDayPercentage) {
+    if (dayPercentage >= minimumDayPercentage) {
       if (isBetterOrEqual(currentSelection, bestFoundSelection, businessDayArray)) {
         copyDaySelection(currentSelection, bestFoundSelection)
       }
