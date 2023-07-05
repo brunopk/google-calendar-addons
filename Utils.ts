@@ -24,18 +24,32 @@ function toLocalDateString(date: Date): string {
 }
 
 function formatAsHtml(tasks: ExtendedTask[]): string {
-  return tasks.reduce((previousValue, task) => {
-    if (!task.due) {
-      throw new Error(`Undefined due date for task "${task.title}"`)
+  if (tasks.length == 1) {
+    if (!tasks[0].due) {
+      throw new Error(`Undefined due date for task "${tasks[0].title}"`);
     }
-    const dueDate = new Date(task.due)
-    return `${previousValue}
-      <span>--------------------------------</span><br>
-      <span>Task list: ${task.taskList.title}</span><br>
-      <span>Task: ${task.title}</span><br>
-      <span>Date: ${dueDate.toDateString()}</span><br>
-      <br>`
-  }, "")
+    const dueDate = new Date(tasks[0].due)
+    return `
+      <span>Task list: ${tasks[0].taskList.title}</span><br>
+      <span>Task: ${tasks[0].title}</span><br>
+      <span>Date: ${dueDate.toDateString()}</span><br>`
+  }
+
+  let dueDate = new Date(tasks[0].due)
+  let result = `
+    <span>Task list: ${tasks[0].taskList.title}</span><br>
+    <span>Task: ${tasks[0].title}</span><br>
+    <span>Date: ${dueDate.toDateString()}</span><br>`
+  for (const i in tasks.slice(1)) {
+    dueDate = new Date(tasks[i].due)
+    result += `
+      <span>-------------------------------------</span><br>
+      <span>Task list: ${tasks[i].taskList.title}</span><br>
+      <span>Task: ${tasks[i].title}</span><br>
+      <span>Date: ${dueDate.toDateString()}</span><br>`
+  }
+
+  return result
 }
 
 function isEqualByYearMonthDay(d1: Date, d2: Date): boolean {
