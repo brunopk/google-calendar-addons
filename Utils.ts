@@ -40,7 +40,7 @@ function formatAsHtml(tasks: ExtendedTask[]): string {
     <span>Task list: ${tasks[0].taskList.title}</span><br>
     <span>Task: ${tasks[0].title}</span><br>
     <span>Date: ${dueDate.toDateString()}</span><br>`
-  for (const i in tasks.slice(1)) {
+  for (let i = 1; i < tasks.length; i++) {
     dueDate = new Date(tasks[i].due)
     result += `
       <span>-------------------------------------</span><br>
