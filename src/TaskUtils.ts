@@ -38,7 +38,7 @@ function listPendingTasks(taskList: tasks_v1.Schema$TaskList): ExtendedTask[] {
       throw new Error("Undefined task list id")
     }
 
-    tasks = Tasks.Tasks?.list(taskList.id, { dueMax: now, showCompleted: true })
+    tasks = Tasks.Tasks?.list(taskList.id, { pageToken ,dueMax: now, showCompleted: true })
     tasks?.items?.forEach((task) => {
       const extendedTask = task as ExtendedTask
       extendedTask.taskList = taskList
