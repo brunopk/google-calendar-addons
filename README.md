@@ -6,11 +6,17 @@ Node version: v16.17.0
 
 ## Running on Google App Scripts
 
-Define the corresponding properties before running (see [Property service](https://developers.google.com/apps-script/reference/properties?hl=en)). Before uploading code to Google Apps Script :
+### Before uploading content with clasp command
 
-- Remove or comment out all `imports ...` and before running any function remove `Test.gs` and `test/test.gs`.
-- Remove or comment out all constant definition in every file but `Constants/ts` to avoid duplication (they are redefined on `WorkPlanification.ts` and other files to work with mocha test).
+For Google App Scripts environment all variables are treated like a global scope, no matter which file are defined, so its not possible to use `import` nor `export`. In order to work with this, before uploading content with `clasp`:
 
+- Remove or comment out all `imports ...` (don't commit this changes).
+- Remove or comment out all `exports ...` (don't commit this changes).
+
+### Before running on Google App Script environment
+
+- Define the corresponding properties before running (see [Property service](https://developers.google.com/apps-script/reference/properties?hl=en)).
+- Set needed constants on src/Constants.ts
 
 ## Testing
 
