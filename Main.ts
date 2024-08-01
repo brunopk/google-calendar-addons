@@ -21,8 +21,11 @@ function sendMailForPendingTasks() {
   const tasks = taskLists
     .map((taskList) => listPendingTasks(taskList))
     .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
-  const htmlBody = formatAsHtml(tasks)
-  MailApp.sendEmail(MAIL_RECIPIENT, MAIL_SUBJECT, "", { htmlBody })
+
+  if (tasks.length > 0) {
+    const htmlBody = formatAsHtml(tasks)
+    MailApp.sendEmail(MAIL_RECIPIENT, MAIL_SUBJECT, "", { htmlBody })
+  }
 }
 
 function foundBestOfficeDaySelection() {
