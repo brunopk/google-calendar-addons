@@ -1,4 +1,4 @@
-import { tasks_v1 } from "googleapis"
+// import { tasks_v1 } from "googleapis"
 
 /**
  * Returns the ids of all task list
@@ -18,8 +18,6 @@ function listTaskLists(): tasks_v1.Schema$TaskList[] {
 
   return allTaskListIds
 }
-
-// TODO: ver porque entra en loop
 
 /**
  * List all pending (uncompleted) tasks until now

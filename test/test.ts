@@ -1,11 +1,11 @@
 import assert from "assert"
-import { isEqualByYearMonthDay } from "../Utils"
+import { isEqualByYearMonthDay } from "../src/Utils"
 import {
   findBestBusinessDaySelectionUsingBacktracking,
   generateBusinessDayArray,
   generateEmptyBusinessDaySelection,
   generateWorstBusinessDaySelection
-} from "../WorkPlanning"
+} from "../src/WorkPlanning"
 
 describe("WorkPlanning", function () {
   it("Test generateBusinessDayArray", function () {

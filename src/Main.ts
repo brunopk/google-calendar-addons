@@ -1,10 +1,10 @@
-import { FOUND_BEST_OFFICE_DAY_SELECTION, PROPERTY_KEYS } from "./Constants"
+/*import { FOUND_BEST_OFFICE_DAY_SELECTION, PROPERTY_KEYS } from "./Constants"
 import {
   generateBusinessDayArray,
   generateEmptyBusinessDaySelection,
   generateWorstBusinessDaySelection,
   findBestBusinessDaySelectionUsingBacktracking
-} from "./WorkPlanning"
+} from "./WorkPlanning"*/
 
 function sendMailForPendingTasks() {
   const MAIL_RECIPIENT = PropertiesService.getScriptProperties().getProperty(PROPERTY_KEYS.MAIL_RECIPIENT)
@@ -21,7 +21,8 @@ function sendMailForPendingTasks() {
   const tasks = taskLists
     .map((taskList) => listPendingTasks(taskList))
     .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
-
+    .sort((taskA, taskB) => new Date(taskA.due as string).getTime() - new Date(taskB.due as string).getTime())
+  
   if (tasks.length > 0) {
     const htmlBody = formatAsHtml(tasks)
     MailApp.sendEmail(MAIL_RECIPIENT, MAIL_SUBJECT, "", { htmlBody })
@@ -61,4 +62,4 @@ function foundBestOfficeDaySelection() {
   })
 }
 
-export { foundBestOfficeDaySelection }
+// export { foundBestOfficeDaySelection }
